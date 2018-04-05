@@ -1,5 +1,6 @@
 package slowger.hwk4;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,15 +32,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
-    /** Called when the user clicks the Submit button */
-    public void submitLocation(View view){
+    /**
+     * Called when the user clicks the Submit button
+     */
+    public void submitLocation(View view) {
         // Get view elements
-        address = (EditText)findViewById(R.id.address);
-        tempTextView = (TextView)findViewById(R.id.textView); // (TEMP) used for displaying latitude and longitude
+        address = (EditText) findViewById(R.id.address);
+        tempTextView = (TextView) findViewById(R.id.textView); // (TEMP) used for displaying latitude and longitude
 
         // Create request URL
         String formatedAddress = URLEncoder.encode(address.getText().toString());
-        final String url = "https://maps.googleapis.com/maps/api/geocode/json?address="+formatedAddress+"&key=AIzaSyD8orFbuR-q_BZZfizdvtOKfeUPEs-iul8";
+        final String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + formatedAddress + "&key=AIza SyD8orFbuR-q_BZZfizdvtOKfeUPEs-iul8";
 
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -49,23 +52,32 @@ public class MainActivity extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        System.out.println("Request URL is: "+ url);    // DEBUG
-                        System.out.println("Response is: "+ response);  // DEBUG
+                        System.out.println("Request URL is: " + url);    // DEBUG
+                        System.out.println("Response is: " + response);  // DEBUG
 
                         // Convert string response to JSONObject to parse for latitude and longitude
                         try {
                             JSONObject responseJSON = new JSONObject(response);
                             JSONArray results = responseJSON.getJSONArray("results");
-                            JSONObject geometry = ((JSONObject)results.get(0)).getJSONObject("geometry");
+                            JSONObject geometry = ((JSONObject) results.get(0)).getJSONObject("geometry");
                             JSONObject loc = geometry.getJSONObject("location");
                             double lat = loc.getDouble("lat");
                             double lng = loc.getDouble("lng");
 
-                            System.out.println("Latitude : Longitude --- "+lat+" : "+lng);   // DEBUG
-                            tempTextView.setText("Latitude: "+lat+"\nLongitude: "+lng);    // DEBUG
+                            System.out.println("Latitude : Longitude --- " + lat + " : " + lng);   // DEBUG
+                            tempTextView.setText("Latitude: " + lat + "\nLongitude: " + lng);    // DEBUG
+                            Intent editIntent = new Intent(MainActivity.this, MapsActivity.class);
+                            Bundle bundle = new Bundle();
+
+                            bundle.putDouble("latt", lat);
+                            bundle.putDouble("long", lng);
+                            editIntent.putExtras(bundle);
+
+                            startActivity(editIntent);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
 
                     }
                 }, new Response.ErrorListener() {
