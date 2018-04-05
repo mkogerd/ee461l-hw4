@@ -59,13 +59,18 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             JSONObject responseJSON = new JSONObject(response);
                             JSONArray results = responseJSON.getJSONArray("results");
+                            JSONArray address_components = ((JSONObject)results.get(0)).getJSONArray("address_components");
                             JSONObject geometry = ((JSONObject) results.get(0)).getJSONObject("geometry");
                             JSONObject loc = geometry.getJSONObject("location");
+                            String county = ((JSONObject) address_components.get(4)).getString("long_name");
+                            String zip = ((JSONObject) address_components.get(7)).getString("long_name");
                             double lat = loc.getDouble("lat");
                             double lng = loc.getDouble("lng");
+                            //String county = county.get("long_name");
 
                             System.out.println("Latitude : Longitude --- " + lat + " : " + lng);   // DEBUG
-                            tempTextView.setText("Latitude: " + lat + "\nLongitude: " + lng);    // DEBUG
+                            tempTextView.setText("Latitude: " + lat + "\nLongitude: " + lng +"\n"+county+", "+zip);    // DEBUG
+                            System.out.println(county);
                             Intent editIntent = new Intent(MainActivity.this, MapsActivity.class);
                             Bundle bundle = new Bundle();
 
