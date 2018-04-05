@@ -21,7 +21,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:padding="8dp"
-        android:text="Return"
+        android:text="Return To Address Entry"
         android:onClick="finish"
         android:layout_margin="5dp"
          />
