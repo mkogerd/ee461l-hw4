@@ -25,6 +25,11 @@ public class MainActivity extends AppCompatActivity {
 
     EditText address;
     TextView tempTextView;
+    public double lat;
+    public double lng;
+    public String timeZone;
+    String geoLocationKey = "AIza SyD8orFbuR-q_BZZfizdvtOKfeUPEs-iul8";
+    String timeZoneKey = "AIzaSyDD7HM0NNOqF4pVXajvh7HTYkhigbX592s";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,17 +47,17 @@ public class MainActivity extends AppCompatActivity {
 
         // Create request URL
         String formatedAddress = URLEncoder.encode(address.getText().toString());
-        final String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + formatedAddress + "&key=AIza SyD8orFbuR-q_BZZfizdvtOKfeUPEs-iul8";
+        final String geoLocationUrl = "https://maps.googleapis.com/maps/api/geocode/json?address=" + formatedAddress + "&key=" +geoLocationKey;
 
         // Instantiate the RequestQueue.
         RequestQueue queue = Volley.newRequestQueue(this);
 
         // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, geoLocationUrl,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        System.out.println("Request URL is: " + url);    // DEBUG
+                        System.out.println("Request URL is: " + geoLocationUrl);    // DEBUG
                         System.out.println("Response is: " + response);  // DEBUG
 
                         // Convert string response to JSONObject to parse for latitude and longitude
@@ -64,13 +69,17 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject loc = geometry.getJSONObject("location");
                             String county = ((JSONObject) address_components.get(4)).getString("long_name");
                             String zip = ((JSONObject) address_components.get(7)).getString("long_name");
-                            double lat = loc.getDouble("lat");
-                            double lng = loc.getDouble("lng");
+                            lat = loc.getDouble("lat");
+                            lng = loc.getDouble("lng");
                             //String county = county.get("long_name");
 
                             System.out.println("Latitude : Longitude --- " + lat + " : " + lng);   // DEBUG
                             tempTextView.setText("Latitude: " + lat + "\nLongitude: " + lng +"\n"+county+", "+zip);    // DEBUG
                             System.out.println(county);
+
+                            // Call function to display timezone
+                            getTimeZone();
+
                             Intent editIntent = new Intent(MainActivity.this, MapsActivity.class);
                             Bundle bundle = new Bundle();
 
@@ -92,9 +101,47 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Add the request to the RequestQueue.
+        // Add the requests to the RequestQueue.
         queue.add(stringRequest);
+    }
+
+    public void getTimeZone() {
+
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        // Request Timezone associated with latitude and longitude
+        String cords = lat+","+lng;
+        Long ts = System.currentTimeMillis()/1000;
+        final String timeZoneUrl = "https://maps.googleapis.com/maps/api/timezone/json?location=" + cords + "&timestamp="+ts+"&key=" +timeZoneKey;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, timeZoneUrl,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        System.out.println("Request URL is: " + timeZoneUrl);   // DEBUG
+                        System.out.println("Response is: " + response);         // DEBUG
+
+                        // Convert string response to JSONObject to parse for latitude and longitude
+                        try {
+                            // Find Timezone
+                            JSONObject responseJSON = new JSONObject(response);
+                            timeZone = responseJSON.getString("timeZoneId");
+
+                            tempTextView.setText(tempTextView.getText()+"\nTimezone: "+timeZone);    // DEBUG
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
 
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("VOLLEY", error.getMessage());
+            }
+        });
+
+        // Add the requests to the RequestQueue.
+        queue.add(stringRequest);
     }
 }
