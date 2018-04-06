@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +36,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Thread t = new Thread() {
+            @Override
+            public void run(){
+                try{
+                    while (!isInterrupted()){
+                        Thread.sleep(1000);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run () {
+                                TextView tdate = (TextView) findViewById(R.id.date);
+                                long date = System.currentTimeMillis();
+                                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy\nhh-mm-ss a");
+                                String dateString = sdf.format(date);
+                                tdate.setText(dateString);
+                            }
+                        });
+                    }
+                }catch (InterruptedException e) {
+                }
+            }
+        };
+        t.start();
     }
 
     /**
