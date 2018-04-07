@@ -45,11 +45,22 @@ public class MainActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run () {
+                                // Get current time
                                 TextView tdate = (TextView) findViewById(R.id.date);
                                 long date = System.currentTimeMillis();
-                                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy\nhh-mm-ss a");
+                                SimpleDateFormat sdf = new SimpleDateFormat("MMM dd yyyy\nhh:mm:ss a");
+
+                                // Account for time zone
+                                if (timeZone != null) {
+                                    java.util.TimeZone tz = java.util.TimeZone.getTimeZone(timeZone);
+                                    sdf.setTimeZone(tz);
+                                    System.out.println(sdf.format(date));
+                                }
+
+                                // Refresh clock
                                 String dateString = sdf.format(date);
                                 tdate.setText(dateString);
+
                             }
                         });
                     }
