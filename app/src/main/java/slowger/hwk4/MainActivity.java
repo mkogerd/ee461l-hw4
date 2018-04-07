@@ -19,6 +19,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 
 
@@ -36,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        // Clock update
         Thread t = new Thread() {
             @Override
             public void run(){
@@ -54,12 +58,11 @@ public class MainActivity extends AppCompatActivity {
                                 if (timeZone != null) {
                                     java.util.TimeZone tz = java.util.TimeZone.getTimeZone(timeZone);
                                     sdf.setTimeZone(tz);
-                                    System.out.println(sdf.format(date));
                                 }
 
                                 // Refresh clock
                                 String dateString = sdf.format(date);
-                                tdate.setText(dateString);
+                                tdate.setText("Timezone: "+timeZone+"\n"+dateString);
 
                             }
                         });
@@ -106,9 +109,8 @@ public class MainActivity extends AppCompatActivity {
                             lat = loc.getDouble("lat");
                             lng = loc.getDouble("lng");
                             //String county = county.get("long_name");
-
-                            System.out.println("Latitude : Longitude --- " + lat + " : " + lng);   // DEBUG
-                            tempTextView.setText("Latitude: " + lat + "\nLongitude: " + lng +"\n"+county+", "+zip);    // DEBUG
+                            DecimalFormat df = new DecimalFormat("#.0000000");
+                            tempTextView.setText("Latitude: " + df.format(lat) + "\nLongitude: " + df.format(lng) +"\n"+county+", "+zip);
                             System.out.println(county);
 
                             // Call function to display timezone
@@ -160,13 +162,9 @@ public class MainActivity extends AppCompatActivity {
                             // Find Timezone
                             JSONObject responseJSON = new JSONObject(response);
                             timeZone = responseJSON.getString("timeZoneId");
-
-                            tempTextView.setText(tempTextView.getText()+"\nTimezone: "+timeZone);    // DEBUG
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
-
                     }
                 }, new Response.ErrorListener() {
             @Override
