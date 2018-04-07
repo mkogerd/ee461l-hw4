@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     EditText address;
     TextView tempTextView;
+    android.support.constraint.ConstraintLayout info;
     public double lat;
     public double lng;
     public String timeZone;
@@ -37,8 +38,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
+        info = (android.support.constraint.ConstraintLayout) findViewById(R.id.info);
+        info.setVisibility(View.INVISIBLE);
         // Clock update
         Thread t = new Thread() {
             @Override
@@ -111,19 +112,11 @@ public class MainActivity extends AppCompatActivity {
                             //String county = county.get("long_name");
                             DecimalFormat df = new DecimalFormat("#.0000000");
                             tempTextView.setText("Latitude: " + df.format(lat) + "\nLongitude: " + df.format(lng) +"\n"+county+", "+zip);
-                            System.out.println(county);
+                            info = (android.support.constraint.ConstraintLayout) findViewById(R.id.info);
+                            info.setVisibility(View.VISIBLE);
 
                             // Call function to display timezone
                             getTimeZone();
-
-                            Intent editIntent = new Intent(MainActivity.this, MapsActivity.class);
-                            Bundle bundle = new Bundle();
-
-                            bundle.putDouble("latt", lat);
-                            bundle.putDouble("long", lng);
-                            editIntent.putExtras(bundle);
-
-                            startActivity(editIntent);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -139,6 +132,17 @@ public class MainActivity extends AppCompatActivity {
 
         // Add the requests to the RequestQueue.
         queue.add(stringRequest);
+    }
+
+    public void openMap(View view) {
+        Intent editIntent = new Intent(MainActivity.this, MapsActivity.class);
+        Bundle bundle = new Bundle();
+
+        bundle.putDouble("latt", lat);
+        bundle.putDouble("long", lng);
+        editIntent.putExtras(bundle);
+
+        startActivity(editIntent);
     }
 
     public void getTimeZone() {

@@ -17,9 +17,10 @@
         android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:layout_marginTop="32dp"
         android:orientation="horizontal"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="16dp">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="8dp">
 
         <EditText
             android:id="@+id/address"
@@ -27,6 +28,7 @@
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:ems="10"
+            android:hint="Enter an address!"
             android:inputType="textPostalAddress"
             tools:layout_editor_absoluteX="0dp"
             tools:layout_editor_absoluteY="206dp" />
@@ -43,30 +45,52 @@
             app:layout_constraintStart_toEndOf="@+id/address" />
     </LinearLayout>
 
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/info"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout"
         tools:layout_editor_absoluteX="0dp">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="0dp"
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="TextView"
-            tools:layout_editor_absoluteX="30dp"
-            tools:layout_editor_absoluteY="268dp" />
+            android:layout_marginTop="32dp"
+            android:onClick="openMap"
+            android:text="go to map"
+            android:textSize="24sp"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
+            tools:layout_editor_absoluteX="147dp" />
 
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="TextView"
-            tools:layout_editor_absoluteX="199dp"
-            tools:layout_editor_absoluteY="218dp" />
-    </LinearLayout>
+            android:orientation="horizontal"
+            tools:layout_editor_absoluteX="0dp">
+
+            <TextView
+                android:id="@+id/textView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="TextView"
+                android:textSize="18sp"
+                tools:layout_editor_absoluteX="30dp"
+                tools:layout_editor_absoluteY="268dp"
+                tools:text="Latitude:\nLongitude:" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Timezone:"
+                tools:layout_editor_absoluteX="199dp"
+                tools:layout_editor_absoluteY="218dp" />
+        </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>
